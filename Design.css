@@ -1,0 +1,50 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #3f37c9;
+    color: white;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: auto;
+    /* Push logo to the left */
+    padding-left: 20px;
+    padding-top: 10px;
+    /* Add some spacing */
+}
+
+
+/* Style the navigation bar */
+.navbar {
+    overflow: hidden;
+    background-color: transparent;
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    display: flex;
+}
+
+/* Navigation links */
+.navbar a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+.main_container {
+    margin-top: 400px;
+
+    /* Add margin to create space between navigation bar and content */
+}
+
+#intro {
+    width: 50%;
+}
