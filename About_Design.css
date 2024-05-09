@@ -1,17 +1,15 @@
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #3f37c9;
     color: white;
+    margin: 0;
 }
 
 .logo {
     font-size: 24px;
     font-weight: bold;
     margin-right: auto;
-    /* Push logo to the left */
     padding-left: 20px;
     padding-top: 10px;
-    /* Add some spacing */
 }
 
 
@@ -24,6 +22,7 @@ body {
     width: 100%;
     top: 0;
     display: flex;
+
 }
 
 /* Navigation links */
@@ -33,18 +32,47 @@ body {
     text-align: center;
     padding: 14px 20px;
     text-decoration: none;
+    color: black;
 }
 
 a {
     text-decoration: none;
 }
 
-.main_container {
-    margin-top: 400px;
-
-    /* Add margin to create space between navigation bar and content */
+.text_container {
+    margin-top: 10%;
+    display: flex;
+    flex-wrap: wrap;
 }
 
-#intro {
-    width: 50%;
+.aboutUs {
+    text-align: center;
+}
+
+.about {
+    font-size: 1.5em;
+}
+
+.text {
+    margin-left: 20%;
+    margin-right: 20%;
+    color: black;
+}
+
+.team {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.member-name {
+    text-align: center;
+    color: black;
+}
+
+#member {
+    width: 200px;
+    height: 250px;
+    margin: 10px;
+    border-radius: 15px;
 }
