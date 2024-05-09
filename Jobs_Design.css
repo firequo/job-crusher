@@ -1,0 +1,40 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: black;
+    margin: 0;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-top: 10px;
+}
+
+
+/* Style the navigation bar */
+.navbar {
+    overflow: hidden;
+    background-color: transparent;
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    display: flex;
+
+}
+
+/* Navigation links */
+.navbar a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    color: black;
+}
+
+a {
+    text-decoration: none;
+}
