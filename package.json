@@ -1,0 +1,24 @@
+{
+  "name": "job-crusher",
+  "version": "1.0.0",
+  "description": "jobcrusher",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/firequo/job-crusher.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/firequo/job-crusher/issues"
+  },
+  "homepage": "https://github.com/firequo/job-crusher#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemon": "^3.1.0"
+  }
+}
