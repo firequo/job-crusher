@@ -21,3 +21,10 @@
 </body>
 
 </html>
+<script>
+    async function getTop(){
+        const res = await fetch('/salary/top').then((res) => res.json());
+        console.log(res);
+    }
+    window.onload = getTop;
+</script>
