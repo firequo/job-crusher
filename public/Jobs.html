@@ -18,13 +18,63 @@
         <b><a href="Jobs.html">Jobs</a></b>
         <b><a href="Contact.html">Contact</a></b>
     </div>
+    <div>
+        <form>
+            <input type="text" required minlength="4" id="job">
+            <button onclick="addJob(); return false">
+        </form>
+    </div>
+    <div id="jobChartBox">
+    </div>
 </body>
 
 </html>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    async function addJob(){
+        const job = document.getElementById('job').value
+        console.log(job);
+        const json = await fetch(`/salary/${job}`).then((res) => res.json());
+        console.log(json);
+        const keys = Object.keys(json);
+        if(keys.length != 1) return;
+        if(labels.includes(keys[0])) return;
+        labels.push(keys[0]);
+        data.push(json[keys[0]]);
+        makeChart();
+    }
     async function getTop(){
         const res = await fetch('/salary/top').then((res) => res.json());
-        console.log(res);
+        labels = Object.keys(res);
+        for(let i = 0; i < labels.length; i++){
+            data.push(res[labels[i]]);
+        }
+        makeChart();
     }
+    async function makeChart(){
+        document.getElementById('jobChartBox').innerHTML = '';
+        document.getElementById('jobChartBox').innerHTML = '<canvas id="jobChart"></canvas>';
+        const ctx = document.getElementById('jobChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Mean Salary',
+                    data: data,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    let labels = [];
+    let data = [];
     window.onload = getTop;
 </script>

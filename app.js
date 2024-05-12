@@ -1,6 +1,7 @@
 const express = require('express');
 const https = require('https');
 const fs = require('fs');
+const supabaseClient = require('@supabase/supabase-js');
 
 const app = express();
 const port = 3000;
@@ -15,14 +16,72 @@ let avgSalaries = require('./average_salaries.json');
 let apiKeyInfo = require('./keys.json');
 const api_key = apiKeyInfo.apiKey;
 const api_id = apiKeyInfo.apiId;
+const supabase_url = 'https://tivhtpnwbqgcpxwifuej.supabase.co';
+const supabase_key = apiKeyInfo.supabaseKey; 
+const supabase = supabaseClient.createClient(supabase_url, supabase_key);
+async function getdata(){
+    const {data, error} = await supabase
+        .from('salaries')
+        .select()
+    console.log(data);
+    console.log(error);
+}
 
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+    await getdata();
     res.sendFile('public/Home_Page.html', {root: __dirname});
 });
 app.get('/salary/top', (req, res) => {
     res.send(avgSalaries);
+});
+
+app.get('/salary/:job', async (req, ores) => {
+    let job = req.params.job;
+    let tosend = {};
+
+    const select_resp = await supabase
+        .from('salaries')
+        .select()
+        .eq('job', job);
+    console.log(select_resp.data);
+    console.log(select_resp.error);
+    if(select_resp.error == null && select_resp.data.length != 0) {
+        tosend[job] = select_resp.data[0].salary;
+        ores.send(tosend);
+    } else {
+        const url = `https://api.adzuna.com/v1/api/jobs/us/histogram?app_id=${api_id}&app_key=${api_key}&what=${job}&content-type=application/json`;
+
+        https.get(url, async (res) => {
+            console.log('statusCode:', res.statusCode);
+            console.log('headers:', res.headers);
+            let data = '';
+            res.on('data', chunk => {
+                data += chunk;
+            });
+            res.on('end', async () => {
+                console.log(data);
+                if(res.statusCode == 200){
+                    const json = JSON.parse(data);
+                    console.log(json);
+                    let meanSalary = calcMeanSalary(json.histogram);
+                    console.log(`job: ${job} mean salary: ${meanSalary}`);
+                    tosend[job] = meanSalary;
+                    ores.send(tosend);
+                    const insert_resp = await supabase
+                        .from('salaries')
+                        .insert({job: job, salary: meanSalary, search_count: 1})
+
+                    if(insert_resp.error){
+                        console.error(insert_resp.error);
+                    }
+                }
+            });
+        }).on('error', (e) => {
+            console.error(e);
+        });
+    }
 });
 
 app.listen(port, () => {

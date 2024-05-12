@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/firequo/job-crusher#readme",
   "dependencies": {
+    "@supabase/supabase-js": "^2.43.1",
     "express": "^4.19.2",
     "nodemon": "^3.1.0"
   }
