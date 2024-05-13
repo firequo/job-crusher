@@ -55,8 +55,7 @@ app.get('/salary/:job', async (req, ores) => {
         .from('salaries')
         .select()
         .eq('job', job);
-    console.log(select_resp.data);
-    console.log(select_resp.error);
+
     // if in database, send
     // otherwise fetch from api, store in db, and send
     if(select_resp.error == null && select_resp.data.length != 0) {
@@ -74,23 +73,23 @@ app.get('/salary/:job', async (req, ores) => {
             data += chunk;
         });
         res.on('end', async () => {
-            console.log(data);
-            if(res.statusCode == 200){
-                const json = JSON.parse(data);
-                console.log(json);
-                let meanSalary = calcMeanSalary(json.histogram);
-                console.log(`job: ${job} mean salary: ${meanSalary}`);
-                tosend[job] = meanSalary;
+            if(res.statusCode != 200){
+                console.log(data);
+                return;
+            }
+            const json = JSON.parse(data);
+            console.log(json);
+            let meanSalary = calcMeanSalary(json.histogram);
+            tosend[job] = meanSalary;
 
-                ores.send(tosend);
+            ores.send(tosend);
 
-                const insert_resp = await supabase
-                    .from('salaries')
-                    .insert({job: job, salary: meanSalary, search_count: 1});
+            const insert_resp = await supabase
+                .from('salaries')
+                .insert({job: job, salary: meanSalary, search_count: 1});
 
-                if(insert_resp.error){
-                    console.error(insert_resp.error);
-                }
+            if(insert_resp.error){
+                console.error(insert_resp.error);
             }
         });
     }).on('error', (e) => {
