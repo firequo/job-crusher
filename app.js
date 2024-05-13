@@ -19,18 +19,10 @@ const api_id = apiKeyInfo.apiId;
 const supabase_url = 'https://tivhtpnwbqgcpxwifuej.supabase.co';
 const supabase_key = apiKeyInfo.supabaseKey; 
 const supabase = supabaseClient.createClient(supabase_url, supabase_key);
-async function getdata(){
-    const {data, error} = await supabase
-        .from('salaries')
-        .select()
-    console.log(data);
-    console.log(error);
-}
 
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', async (req, res) => {
-    await getdata();
     res.sendFile('public/Home_Page.html', {root: __dirname});
 });
 app.get('/salary/top', (req, res) => {
@@ -47,6 +39,8 @@ app.get('/salary/:job', async (req, ores) => {
         .eq('job', job);
     console.log(select_resp.data);
     console.log(select_resp.error);
+    // if in database, send
+    // otherwise fetch from api, store in db, and send
     if(select_resp.error == null && select_resp.data.length != 0) {
         tosend[job] = select_resp.data[0].salary;
         ores.send(tosend);
@@ -92,12 +86,12 @@ app.listen(port, () => {
 function sample_http_request(){
     let url = 'https://whatever.com';
     https.get(url, (res) => {
-        let data = [];
+        let data = '';
         res.on('data', chunk => {
-            data.push(chunk);
+            data += chunk;
         });
         res.on('end', () => {
-            const json = JSON.parse(Buffer.concat(data).toString());
+            const json = JSON.parse(data);
             // change here
 
         });
@@ -116,16 +110,18 @@ function getDataFile(){
     retval[jobs[0]] = meanSalary;
     return retval;
 }
-let averageSalaries = {};
-let today = new Date();
+
+// let averageSalaries = {};
+// let today = new Date();
 // if(today.getHours()  == 1 && today.getMinutes() == 0){
 //     //nodemon makes this an infinite loop, dont run this please ever
 //     getDataHttp(0, averageSalaries, saveSalaries);
 // }
-function saveSalaries(json){
-    var string = JSON.stringify(json);
-    fs.writeFileSync('average_salaries.json', string, 'utf8', );
-}
+// function saveSalaries(json){
+//     var string = JSON.stringify(json);
+//     fs.writeFileSync('average_salaries.json', string, 'utf8', );
+// }
+
 // this function makes a request for each job in the list up top, so prob gonna set up a syncer to db once a day or smth to not spam
 // code above does the full call and saves it to a file when the server starts
 // do NOT use with nodemon
@@ -141,15 +137,14 @@ function getDataHttp(i, retval, callback){
         console.log('statusCode:', res.statusCode);
         console.log('headers:', res.headers);
 
-        let data = [];
+        let data = '';
         res.on('data', chunk => {
-            data.push(chunk);
+            data += chunk;
         });
         res.on('end', () => {
-            const newdata = Buffer.concat(data).toString();
 
             if(res.statusCode == 200){
-                const json = JSON.parse(newdata);
+                const json = JSON.parse(data);
                 console.log(json);
                 let meanSalary = calcMeanSalary(json.histogram);
                 console.log(`job: ${job} mean salary: ${meanSalary}`);
@@ -169,8 +164,6 @@ function getDataHttp(i, retval, callback){
 function calcMeanSalary(histogram){
     let sum = 0;
     let counter = 0;
-    // other ways of looping over this were straight up not working, no idea why
-    // boomer loops win again ig
     let keys = Object.keys(histogram);
     for(let i = 0; i < keys.length; i++){
         let salary = keys[i];

@@ -34,11 +34,12 @@
     async function addJob(){
         const job = document.getElementById('job').value
         console.log(job);
+        if(labels.includes(job)) return;
         const json = await fetch(`/salary/${job}`).then((res) => res.json());
         console.log(json);
         const keys = Object.keys(json);
         if(keys.length != 1) return;
-        if(labels.includes(keys[0])) return;
+        console.log(labels);
         labels.push(keys[0]);
         data.push(json[keys[0]]);
         makeChart();
