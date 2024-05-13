@@ -51,9 +51,10 @@
     }
     async function getTop(){
         const res = await fetch('/salary/top').then((res) => res.json());
-        labels = Object.keys(res);
-        for(let i = 0; i < labels.length; i++){
-            data.push(res[labels[i]]);
+        console.log(res);
+        for(let i = 0; i < res.length; i++){
+            labels.push(res[i].job);
+            data.push(res[i].salary);
         }
         makeChart();
     }

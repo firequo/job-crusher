@@ -5,14 +5,6 @@ const supabaseClient = require('@supabase/supabase-js');
 
 const app = express();
 const port = 3000;
-let jobs = [
-    'software developer',
-    'help desk',
-    'technical support',
-    'project management',
-    'operations'
-];
-let avgSalaries = require('./average_salaries.json');
 let apiKeyInfo = require('./keys.json');
 const api_key = apiKeyInfo.apiKey;
 const api_id = apiKeyInfo.apiId;
@@ -21,19 +13,6 @@ const supabase_key = apiKeyInfo.supabaseKey;
 const supabase = supabaseClient.createClient(supabase_url, supabase_key);
 
 app.use(express.static(__dirname + '/public'));
-async function storeMain(){
-    const keys = Object.keys(avgSalaries);
-    for(let i = 0; i < keys.length; i++){
-        const job = keys[i];
-        const insert_resp = await supabase
-            .from('salaries')
-            .insert({job: job, salary: avgSalaries[job], search_count: 1})
-
-        if(insert_resp.error){
-            console.error(insert_resp.error);
-        }
-    }
-}
 
 app.get('/', (req, res) => {
     res.sendFile('public/Home_Page.html', {root: __dirname});
@@ -47,8 +26,25 @@ app.get('/about', (req, res) => {
 app.get('/contact', (req, res) => {
     res.sendFile('public/Contact.html', {root: __dirname});
 });
-app.get('/salary/top', (req, res) => {
-    res.send(avgSalaries);
+app.get('/salary/top', async (req, res) => {
+    // currently these have to be in the db or will do a poopoo probably
+    let jobs = [
+        'software developer',
+        'help desk',
+        'technical support',
+        'project management',
+        'operations'
+    ];
+    const select = await supabase
+        .from('salaries')
+        .select()
+        .in('job', jobs);
+
+    if(select.error){
+        console.error(insert_resp.error);
+    } else {
+        res.send(select.data);
+    }
 });
 
 app.get('/salary/:job', async (req, ores) => {
