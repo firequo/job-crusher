@@ -27,7 +27,7 @@ app.get('/contact', (req, res) => {
     res.sendFile('public/Contact.html', {root: __dirname});
 });
 app.get('/salary/top', async (req, res) => {
-    // currently these have to be in the db or will do a poopoo probably
+    // currently these have to be in the db or will _probably_ do a poopoo 
     let jobs = [
         'software developer',
         'help desk',
@@ -100,6 +100,20 @@ app.listen(port, () => {
     console.log(`Express app listening on port ${port}`);
 });
 
+function calcMeanSalary(histogram){
+    let sum = 0;
+    let counter = 0;
+    let keys = Object.keys(histogram);
+    for(let i = 0; i < keys.length; i++){
+        let salary = keys[i];
+        let amount = Number(histogram[salary]);
+        let count = Number(amount);
+        sum += Number(salary) * count;
+        counter += count;
+    }
+    return sum / counter;
+}
+
 // use this as template for requests
 function sample_http_request(){
     let url = 'https://whatever.com';
@@ -118,36 +132,22 @@ function sample_http_request(){
     });
 }
 
-// mock request
-let testfile = require('./ex_resp.json');
-function getDataFile(){
-    let retval = {};
-    console.log(testfile);
-    let meanSalary = calcMeanSalary(testfile.histogram);
-    console.log(`mean salary: ${meanSalary}`);
-    retval[jobs[0]] = meanSalary;
-    return retval;
-}
 
-// let averageSalaries = {};
-// let today = new Date();
-// if(today.getHours()  == 1 && today.getMinutes() == 0){
-//     //nodemon makes this an infinite loop, dont run this please ever
-//     getDataHttp(0, averageSalaries, saveSalaries);
-// }
-// function saveSalaries(json){
-//     var string = JSON.stringify(json);
-//     fs.writeFileSync('average_salaries.json', string, 'utf8', );
-// }
-
+// deprecated, will change soon
 // this function makes a request for each job in the list up top, so prob gonna set up a syncer to db once a day or smth to not spam
-// code above does the full call and saves it to a file when the server starts
 // do NOT use with nodemon
-// PLEASE DO NOT TEST USING THIS 
+// PLEASE DO NOT USE THIS  
 // it will fuck 
 // cursed
 // adzuna does not allow concurrent requests, so have to do it this way smh
 function getDataHttp(i, retval, callback){
+    let jobs = [
+        'software developer',
+        'help desk',
+        'technical support',
+        'project management',
+        'operations'
+    ];
     const job = jobs[i];
     const url = `https://api.adzuna.com/v1/api/jobs/us/histogram?app_id=${api_id}&app_key=${api_key}&what=${job}&content-type=application/json`;
 
@@ -178,17 +178,4 @@ function getDataHttp(i, retval, callback){
     }).on('error', (e) => {
         console.error(e);
     });
-}
-function calcMeanSalary(histogram){
-    let sum = 0;
-    let counter = 0;
-    let keys = Object.keys(histogram);
-    for(let i = 0; i < keys.length; i++){
-        let salary = keys[i];
-        let amount = Number(histogram[salary]);
-        let count = Number(amount);
-        sum += Number(salary) * count;
-        counter += count;
-    }
-    return sum / counter;
 }
