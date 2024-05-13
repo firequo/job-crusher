@@ -12,13 +12,13 @@
 <body>
     <!--Navigation-->
     <div class="navbar">
-        <div class="logo"><a href="Home_Page.html">The TOP</a></div>
-        <b><a href="Home_Page.html">Home</a></b>
-        <b><a href="About.html">About</a></b>
-        <b><a href="Jobs.html">Jobs</a></b>
-        <b><a href="Contact.html">Contact</a></b>
+        <div class="logo"><a href="/">The TOP</a></div>
+        <b><a href="/">Home</a></b>
+        <b><a href="/about">About</a></b>
+        <b><a href="/jobs">Jobs</a></b>
+        <b><a href="/contact">Contact</a></b>
     </div>
-    <div>
+    <div id="formbox">
         <form>
             <input type="text" required minlength="4" id="job">
             <button onclick="addJob(); return false">
@@ -35,7 +35,12 @@
         const job = document.getElementById('job').value
         console.log(job);
         if(labels.includes(job)) return;
+        let loading = document.createElement('p');
+        loading.textContent = 'Loading';
+        loading.id = 'loading';
+        document.getElementById('formbox').appendChild(loading);
         const json = await fetch(`/salary/${job}`).then((res) => res.json());
+        loading.remove();
         console.log(json);
         const keys = Object.keys(json);
         if(keys.length != 1) return;

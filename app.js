@@ -21,9 +21,31 @@ const supabase_key = apiKeyInfo.supabaseKey;
 const supabase = supabaseClient.createClient(supabase_url, supabase_key);
 
 app.use(express.static(__dirname + '/public'));
+async function storeMain(){
+    const keys = Object.keys(avgSalaries);
+    for(let i = 0; i < keys.length; i++){
+        const job = keys[i];
+        const insert_resp = await supabase
+            .from('salaries')
+            .insert({job: job, salary: avgSalaries[job], search_count: 1})
 
-app.get('/', async (req, res) => {
+        if(insert_resp.error){
+            console.error(insert_resp.error);
+        }
+    }
+}
+
+app.get('/', (req, res) => {
     res.sendFile('public/Home_Page.html', {root: __dirname});
+});
+app.get('/jobs', (req, res) => {
+    res.sendFile('public/Jobs.html', {root: __dirname});
+});
+app.get('/about', (req, res) => {
+    res.sendFile('public/About.html', {root: __dirname});
+});
+app.get('/contact', (req, res) => {
+    res.sendFile('public/Contact.html', {root: __dirname});
 });
 app.get('/salary/top', (req, res) => {
     res.send(avgSalaries);

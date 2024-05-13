@@ -1,4 +1,5 @@
 {
     "apiKey": "your key",
-    "apiId": "your id"
+    "apiId": "your id",
+    "supabaseKey": "key"
 }
