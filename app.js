@@ -97,6 +97,40 @@ app.get('/salary/:job', async (req, ores) => {
     });
 });
 
+// dont use this endpoint pls
+app.post('/savecategories', async (req, ores) => {
+    const url = `https://api.adzuna.com/v1/api/jobs/us/categories?app_id=${api_id}&app_key=${api_key}`;
+    https.get(url, async (res) => {
+        console.log('statusCode:', res.statusCode);
+        console.log('headers:', res.headers);
+        let data = '';
+        res.on('data', chunk => {
+            data += chunk;
+        });
+        res.on('end', async () => {
+            if(res.statusCode != 200){
+                console.log(data);
+                return;
+            }
+            const obj = JSON.parse(data);
+            console.log(obj);
+            let tosend = [];
+            for(let i = 0; i < obj.results.length; i++){
+                tosend.push({category: obj.results[i].label, tag: obj.results[i].tag});
+            }
+            const insert_resp = await supabase
+                .from('categories')
+                .insert(tosend);
+
+            if(insert_resp.error){
+                console.error(insert_resp.error);
+            }
+        });
+    }).on('error', (e) => {
+        console.error(e);
+    });
+});
+
 app.listen(port, () => {
     console.log(`Express app listening on port ${port}`);
 });
