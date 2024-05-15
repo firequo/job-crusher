@@ -21,16 +21,42 @@
     <div id="formbox">
         <form>
             <input type="text" required minlength="4" id="job">
-            <button onclick="addJob(); return false">
+            <button onclick="addJob(); return false">Find Average Salary</button>
         </form>
     </div>
     <div id="jobChartBox">
+    </div>
+    <div id="categoryButtons">
     </div>
 </body>
 
 </html>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    let categories;
+    async function onStart(){
+        await getTop();
+        await getCategories();
+    }
+    async function getCategories(){
+        categories = await fetch('/categories').then((res) => res.json());
+        console.log(categories);
+        let box = document.getElementById('categoryButtons');
+        for(let i = 0; i < categories.length; i++){
+            let button = document.createElement('button');
+            button.textContent = categories[i].category;
+            box.appendChild(button);
+        }
+    }
+    async function getTop(){
+        const res = await fetch('/salary/top').then((res) => res.json());
+        console.log(res);
+        for(let i = 0; i < res.length; i++){
+            labels.push(res[i].job);
+            data.push(res[i].salary);
+        }
+        makeSalChart();
+    }
     async function addJob(){
         const job = document.getElementById('job').value
         console.log(job);
@@ -47,18 +73,9 @@
         console.log(labels);
         labels.push(keys[0]);
         data.push(json[keys[0]]);
-        makeChart();
+        makeSalChart();
     }
-    async function getTop(){
-        const res = await fetch('/salary/top').then((res) => res.json());
-        console.log(res);
-        for(let i = 0; i < res.length; i++){
-            labels.push(res[i].job);
-            data.push(res[i].salary);
-        }
-        makeChart();
-    }
-    async function makeChart(){
+    async function makeSalChart(){
         document.getElementById('jobChartBox').innerHTML = '';
         document.getElementById('jobChartBox').innerHTML = '<canvas id="jobChart"></canvas>';
         const ctx = document.getElementById('jobChart');
@@ -83,5 +100,5 @@
     }
     let labels = [];
     let data = [];
-    window.onload = getTop;
+    window.onload = onStart;
 </script>

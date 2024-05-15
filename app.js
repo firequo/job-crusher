@@ -1,11 +1,10 @@
 const express = require('express');
 const https = require('https');
-const fs = require('fs');
 const supabaseClient = require('@supabase/supabase-js');
+const apiKeyInfo = require('./keys.json');
 
 const app = express();
 const port = 3000;
-let apiKeyInfo = require('./keys.json');
 const api_key = apiKeyInfo.apiKey;
 const api_id = apiKeyInfo.apiId;
 const supabase_url = 'https://tivhtpnwbqgcpxwifuej.supabase.co';
@@ -41,7 +40,7 @@ app.get('/salary/top', async (req, res) => {
         .in('job', jobs);
 
     if(select.error){
-        console.error(insert_resp.error);
+        console.error(select.error);
     } else {
         res.send(select.data);
     }
@@ -64,72 +63,60 @@ app.get('/salary/:job', async (req, ores) => {
         return;
     } 
     const url = `https://api.adzuna.com/v1/api/jobs/us/histogram?app_id=${api_id}&app_key=${api_key}&what=${job}&content-type=application/json`;
+    const obj = await get_async(url);
 
-    https.get(url, async (res) => {
-        console.log('statusCode:', res.statusCode);
-        console.log('headers:', res.headers);
-        let data = '';
-        res.on('data', chunk => {
-            data += chunk;
-        });
-        res.on('end', async () => {
-            if(res.statusCode != 200){
-                console.log(data);
-                return;
-            }
-            const json = JSON.parse(data);
-            console.log(json);
-            let meanSalary = calcMeanSalary(json.histogram);
-            tosend[job] = meanSalary;
+    let meanSalary = calcMeanSalary(obj.histogram);
+    if(meanSalary == 0) {
+        ores.send({});
+        console.error('bad job name');
+        return;
+    }
+    tosend[job] = meanSalary;
+    ores.send(tosend);
 
-            ores.send(tosend);
+    const insert_resp = await supabase
+        .from('salaries')
+        .insert({job: job, salary: meanSalary, search_count: 1});
 
-            const insert_resp = await supabase
-                .from('salaries')
-                .insert({job: job, salary: meanSalary, search_count: 1});
-
-            if(insert_resp.error){
-                console.error(insert_resp.error);
-            }
-        });
-    }).on('error', (e) => {
-        console.error(e);
-    });
+    if(insert_resp.error){
+        console.error(insert_resp.error);
+    }
 });
 
-// dont use this endpoint pls
-app.post('/savecategories', async (req, ores) => {
-    const url = `https://api.adzuna.com/v1/api/jobs/us/categories?app_id=${api_id}&app_key=${api_key}`;
-    https.get(url, async (res) => {
-        console.log('statusCode:', res.statusCode);
-        console.log('headers:', res.headers);
-        let data = '';
-        res.on('data', chunk => {
-            data += chunk;
-        });
-        res.on('end', async () => {
-            if(res.statusCode != 200){
-                console.log(data);
-                return;
-            }
-            const obj = JSON.parse(data);
-            console.log(obj);
-            let tosend = [];
-            for(let i = 0; i < obj.results.length; i++){
-                tosend.push({category: obj.results[i].label, tag: obj.results[i].tag});
-            }
-            const insert_resp = await supabase
-                .from('categories')
-                .insert(tosend);
-
-            if(insert_resp.error){
-                console.error(insert_resp.error);
-            }
-        });
-    }).on('error', (e) => {
-        console.error(e);
-    });
+app.get('/categories', async (req, res) => {
+    const cat = await supabase
+        .from('categories')
+        .select('category, avg_salary, vacancies')
+    if(cat.error) {
+        console.error(cat.error);
+        return;
+    }
+    res.send(cat.data);
 });
+    
+async function get_async(url){
+    console.log(url);
+    return new Promise((resolve, reject) => {
+        https.get(url, (res) => {
+            console.log('statusCode:', res.statusCode);
+            console.log('headers:', res.headers);
+            let data = '';
+            res.on('data', chunk => {
+                data += chunk;
+            });
+            res.on('error', reject);
+            res.on('end', () => {
+                if(res.statusCode != 200){
+                    console.log(data);
+                    resolve(null);
+                } else {
+                    resolve(JSON.parse(data));
+                }
+            });
+        }).on('error', reject);
+    });
+}
+
 
 app.listen(port, () => {
     console.log(`Express app listening on port ${port}`);
@@ -146,27 +133,8 @@ function calcMeanSalary(histogram){
         sum += Number(salary) * count;
         counter += count;
     }
+    if(counter == 0) return 0;
     return sum / counter;
 }
 
-// use this as template for requests
-function sample_http_request(){
-    let url = 'https://whatever.com';
-    https.get(url, (res) => {
-        let data = '';
-        res.on('data', chunk => {
-            data += chunk;
-        });
-        res.on('end', () => {
-            const json = JSON.parse(data);
-            // change here
-
-        });
-    }).on('error', (e) => {
-        console.error(e);
-    });
-}
-
-// function to update average salaries to run daily
-// TODO (low prio)
 
