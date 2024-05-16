@@ -20,8 +20,8 @@
     </div>
     <div id="formbox">
         <form>
-            <input type="text" required minlength="4" id="job">
-            <button onclick="addJob(); return false">Find Average Salary</button>
+            <button id="search" class=".categoryButton" onclick="addJob(); return false">Find Job</button>
+            <input type="text" required minlength="4" id="job" placeholder="Search">
         </form>
     </div>
     <div id="jobChartBox">
@@ -50,7 +50,7 @@
         }
     }*/
     // This new function allow me to style the button on css
-async function getCategories() {
+    async function getCategories() {
         categories = await fetch('/categories').then((res) => res.json());
         console.log(categories);
         let box = document.getElementById('categoryButtons');
