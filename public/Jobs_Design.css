@@ -128,3 +128,9 @@ a {
     opacity: .65;
     pointer-events: none;
 }
+
+#categoryButtons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}

@@ -60,6 +60,9 @@
             button.classList.add('categoryButton'); // Add a class for styling
             button.addEventListener('click', () => {
                 console.log(`Button ${categories[i].category} clicked`);
+                labels.push(categories[i].category);
+                data.push(categories[i].avg_salary);
+                makeSalChart();
             });
             box.appendChild(button);
         }
