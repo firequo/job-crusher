@@ -179,9 +179,9 @@ a {
 }
 #chartboxbox {
     display: grid;
+    padding: 1em;
+    grid-template-rows: 50vh;
     grid-template-columns: 5vw [donut1] 20vw  5vw [jobs] 40vw 5vw [donut2] 20vw 5vw;
-    height: 50vh;
-    padding: 10px;
 }
 
 #jobBox {
