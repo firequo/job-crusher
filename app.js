@@ -74,7 +74,7 @@ app.get('/jobs/:category', async (req, res) => {
     let jobs = await api.getJobsFromCategory(category);
 
     if(jobs === null) {
-        console.error('salary api error');
+        console.error('jobs by category api error');
         res.sendStatus(500);
     }
     res.send(jobs);
