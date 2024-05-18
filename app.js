@@ -1,17 +1,15 @@
 const express = require('express');
-const https = require('https');
-const supabaseClient = require('@supabase/supabase-js');
-const apiKeyInfo = require('./keys.json');
+const db = require('./include/database.js');
+const api = require ('./include/api.js');
 
 const app = express();
 const port = 3000;
-const api_key = apiKeyInfo.apiKey;
-const api_id = apiKeyInfo.apiId;
-const supabase_url = 'https://tivhtpnwbqgcpxwifuej.supabase.co';
-const supabase_key = apiKeyInfo.supabaseKey; 
-const supabase = supabaseClient.createClient(supabase_url, supabase_key);
 
 app.use(express.static(__dirname + '/public'));
+
+app.listen(port, () => {
+    console.log(`Express app listening on port ${port}`);
+});
 
 app.get('/', (req, res) => {
     res.sendFile('public/Home_Page.html', {root: __dirname});
@@ -26,115 +24,49 @@ app.get('/contact', (req, res) => {
     res.sendFile('public/Contact.html', {root: __dirname});
 });
 app.get('/salary/top', async (req, res) => {
-    // currently these have to be in the db or will _probably_ do a poopoo 
-    let jobs = [
-        'software developer',
-        'help desk',
-        'technical support',
-        'project management',
-        'operations'
-    ];
-    const select = await supabase
-        .from('salaries')
-        .select()
-        .in('job', jobs);
-
-    if(select.error){
-        console.error(select.error);
-    } else {
-        res.send(select.data);
+    let salaries = await db.getInitialSalaries();
+    if(salaries === null) {
+        console.error('initial salaries error');
+        res.sendStatus(500);
+        return;
     }
+    res.send(salaries);
 });
 
-app.get('/salary/:job', async (req, ores) => {
+app.get('/salary/:job', async (req, res) => {
     let job = req.params.job;
-    let tosend = {};
 
-    const select_resp = await supabase
-        .from('salaries')
-        .select()
-        .eq('job', job);
-
-    // if in database, send
-    // otherwise fetch from api, store in db, and send
-    if(select_resp.error == null && select_resp.data.length != 0) {
-        tosend[job] = select_resp.data[0].salary;
-        ores.send(tosend);
-        return;
-    } 
-    const url = `https://api.adzuna.com/v1/api/jobs/us/histogram?app_id=${api_id}&app_key=${api_key}&what=${job}&content-type=application/json`;
-    const obj = await get_async(url);
-
-    let meanSalary = calcMeanSalary(obj.histogram);
-    if(meanSalary == 0) {
-        ores.send({});
-        console.error('bad job name');
+    let salary = await db.getSalary(job);
+    if(salary) {
+        let tosend = {};
+        tosend[job] = salary;
+        res.send(tosend);
         return;
     }
-    tosend[job] = meanSalary;
-    ores.send(tosend);
 
-    const insert_resp = await supabase
-        .from('salaries')
-        .insert({job: job, salary: meanSalary, search_count: 1});
+    salary = await api.getSalary(job);
+    if(salary === null) {
+        console.error('salary api error');
+        res.sendStatus(500);
+    }
 
-    if(insert_resp.error){
-        console.error(insert_resp.error);
+    let tosend = {};
+    tosend[job] = salary;
+    res.send(tosend);
+
+    let success = await db.insertJob(job, salary);
+    if(!success) {
+        console.error('insert error');
     }
 });
 
 app.get('/categories', async (req, res) => {
-    const cat = await supabase
-        .from('categories')
-        .select('category, avg_salary, vacancies')
-    if(cat.error) {
-        console.error(cat.error);
-        return;
+    let categories = await db.getCategories();
+    if(categories === null) {
+        res.sendStatus(500);
     }
-    res.send(cat.data);
+    res.send(categories);
 });
     
-async function get_async(url){
-    console.log(url);
-    return new Promise((resolve, reject) => {
-        https.get(url, (res) => {
-            console.log('statusCode:', res.statusCode);
-            console.log('headers:', res.headers);
-            let data = '';
-            res.on('data', chunk => {
-                data += chunk;
-            });
-            res.on('error', reject);
-            res.on('end', () => {
-                if(res.statusCode != 200){
-                    console.log(data);
-                    resolve(null);
-                } else {
-                    resolve(JSON.parse(data));
-                }
-            });
-        }).on('error', reject);
-    });
-}
-
-
-app.listen(port, () => {
-    console.log(`Express app listening on port ${port}`);
-});
-
-function calcMeanSalary(histogram){
-    let sum = 0;
-    let counter = 0;
-    let keys = Object.keys(histogram);
-    for(let i = 0; i < keys.length; i++){
-        let salary = keys[i];
-        let amount = Number(histogram[salary]);
-        let count = Number(amount);
-        sum += Number(salary) * count;
-        counter += count;
-    }
-    if(counter == 0) return 0;
-    return sum / counter;
-}
 
 
