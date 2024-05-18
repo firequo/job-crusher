@@ -26,6 +26,8 @@
     </div>
     <div id="jobChartBox">
     </div>
+    <div id="radarChartBox">
+    </div>
     <div id="categoryButtons">
     </div>
     <div id="jobBox">        
@@ -40,6 +42,7 @@
     async function onStart(){
         await getTop();
         await getCategories();
+        makeRadar();
     }
 
     /*Function to pull jobs from API and post them*/
@@ -111,7 +114,7 @@
         data.push(json[keys[0]]);
         makeSalChart();
     }
-    async function makeSalChart(){
+    function makeSalChart(){
         document.getElementById('jobChartBox').innerHTML = '';
         document.getElementById('jobChartBox').innerHTML = '<canvas id="jobChart"></canvas>';
         const ctx = document.getElementById('jobChart');
@@ -132,6 +135,72 @@
                     }
                 }
             }
+        });
+    }
+    function makeRadar(){
+        let box = document.getElementById('radarChartBox');
+        let catsal = document.createElement('canvas');
+        catsal.id = 'catSalChart';
+        catsal.width = 600;
+        catsal.height = 600;
+        catsal.style.width = '600px';
+        catsal.style.height = '600px';
+        let catvac = document.createElement('canvas');
+        catvac.id = 'catVacChart';
+        catvac.width = 600;
+        catvac.height = 600;
+        catvac.style.width = '600px';
+        catvac.style.height = '600px';
+        box.appendChild(catsal);
+        box.appendChild(catvac);
+        
+        const ctx0 = document.getElementById('catSalChart');
+        const ctx1 = document.getElementById('catVacChart');
+        let categoryLabels = [];
+        let salaryData = [];
+        let vacancyData = [];
+        for(let i = 0; i < categories.length; i++){
+            categoryLabels.push(categories[i].category);
+            salaryData.push(categories[i].avg_salary);
+            vacancyData.push(categories[i].vacancies);
+        }
+        new Chart(ctx0, {
+            type: 'doughnut',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    label: 'Vacancies',
+                    data: vacancyData,
+                    borderWidth: 1
+                },
+                ]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false,
+                    }
+                }
+            },
+        });
+        new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    label: 'Mean Salary',
+                    data: salaryData,
+                    borderWidth: 1
+                },
+                ]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false,
+                    }
+                }
+            },
         });
     }
     let labels = [];
