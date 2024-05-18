@@ -38,9 +38,7 @@ app.get('/salary/:job', async (req, res) => {
 
     let salary = await db.getSalary(job);
     if(salary) {
-        let tosend = {};
-        tosend[job] = salary;
-        res.send(tosend);
+        res.send({[job]: salary});
         return;
     }
 
@@ -50,9 +48,7 @@ app.get('/salary/:job', async (req, res) => {
         res.sendStatus(500);
     }
 
-    let tosend = {};
-    tosend[job] = salary;
-    res.send(tosend);
+    res.send({[job]: salary});
 
     let success = await db.insertJob(job, salary);
     if(!success) {

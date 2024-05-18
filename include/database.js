@@ -5,16 +5,16 @@ const supabase_key = apiKeyInfo.supabaseKey;
 const supabase = supabaseClient.createClient(supabase_url, supabase_key);
 
 async function getInitialSalaries() {
-    const select = await supabase
+    const {data, error} = await supabase
         .from('salaries')
         .select()
         .lt('id', 10)
 
-    if(select.error){
+    if(error){
         console.error(select.error);
         return null;
     } 
-    return select.data;
+    return data;
 }
 
 async function getSalary(job) {
@@ -27,11 +27,11 @@ async function getSalary(job) {
         console.error(error);
         return null;
     }
-    if(data.length == 0){
+    if(data.length === 0){
         console.log('data not in database');
         return null;
     }
-    return data[0];
+    return data[0].salary;
 }
 
 async function insertJob(job, salary){
