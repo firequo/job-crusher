@@ -44,36 +44,42 @@ app.get('/salary/:job', async (req, res) => {
 
     salary = await api.getSalary(job);
     if(salary === null) {
-        console.error('salary api error');
         res.sendStatus(500);
+        return;
     }
 
     res.send({[job]: salary});
 
-    let success = await db.insertJob(job, salary);
-    if(!success) {
-        console.error('insert error');
-    }
+    await db.insertJobSalary(job, salary);
 });
 
 app.get('/categories', async (req, res) => {
     let categories = await db.getCategories();
     if(categories === null) {
         res.sendStatus(500);
+        return;
     }
     res.send(categories);
 });
     
- 
-app.get('/jobs/:category', async (req, res) => {
-    let category = req.params.category;
-    let jobs = await api.getJobsFromCategory(category);
+app.get('/jobs/:categoryTag', async (req, res) => {
+    let tag = req.params.categoryTag;
+
+    let jobs = await db.getJobsFromCategoryTag(tag);
+    if(jobs) {
+        res.send(jobs);
+        return;
+    }
+
+    jobs = await api.getJobsFromCategoryTag(tag);
 
     if(jobs === null) {
-        console.error('jobs by category api error');
         res.sendStatus(500);
+        return;
     }
+
     res.send(jobs);
 
+    await db.insertJobByCategoryTag(tag, jobs);
 });
 

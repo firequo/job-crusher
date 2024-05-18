@@ -11,9 +11,16 @@ async function getInitialSalaries() {
         .lt('id', 10)
 
     if(error){
-        console.error(select.error);
+        console.error('ERROR: GET initial salaries');
+        console.error(error);
         return null;
     } 
+    if(data.length === 0){
+        console.error('ERROR: GET initial salaries');
+        console.error('ERROR: data not in database');
+        return null;
+    }
+    console.log('SUCCESS: GET initial salaries');
     return data;
 }
 
@@ -24,39 +31,79 @@ async function getSalary(job) {
         .eq('job', job);
 
     if(error){
+        console.error('ERROR: GET salary data from salaries');
         console.error(error);
         return null;
     }
     if(data.length === 0){
-        console.log('data not in database');
+        console.error('ERROR: GET salary data from salaries');
+        console.error('ERROR: data not in database');
         return null;
     }
+    console.log('SUCCESS: GET salary data from salaries');
     return data[0].salary;
 }
 
-async function insertJob(job, salary){
+async function insertJobSalary(job, salary){
     const {error} = await supabase
         .from('salaries')
         .insert({job: job, salary: salary, search_count: 1});
 
     if(error){
+        console.error('ERROR: INSERT job, salary into salaries');
         console.error(error);
-        return false;
+        return;
     }
-    return true;
+    console.log('SUCCESS: INSERT job, salary into salaries');
 }
 
 async function getCategories() {
-    const cat = await supabase
+    const {data, error} = await supabase
         .from('categories')
         .select('category, avg_salary, vacancies, tag')
-    if(cat.error) {
-        console.error(cat.error);
+    if(error) {
+        console.error('ERROR: GET category data from categories');
+        console.error(error);
         return null;
     }
-    return cat.data;
+    console.log('SUCCESS: GET category data from categories');
+    return data;
+}
+
+async function getJobsFromCategoryTag(tag) {
+    const {data, error} = await supabase
+        .from('categories')
+        .select('jobs')
+        .eq('tag', tag);
+    if(error) {
+        console.error('ERROR: GET jobs by category from categories');
+        console.error(error);
+        return null;
+    }
+    if(data.length === 0){
+        console.error('ERROR: GET jobs by category from categories');
+        console.error('ERROR: data not in database');
+        return null;
+    }
+    console.log('SUCCESS: GET jobs by category from categories');
+    return data[0].jobs;
+}
+
+async function insertJobByCategoryTag(tag, jobs){
+    const {error} = await supabase
+        .from('categories')
+        .update({jobs: jobs})
+        .eq('tag', tag);
+
+    if(error){
+        console.error('ERROR: UPDATE jobs by category');
+        console.error(error);
+        return;
+    }
+    console.log('SUCCESS: UPDATE jobs by category into categories');
+    return;
 }
 
 module.exports = {
-    getInitialSalaries, getSalary, insertJob, getCategories,
+    getInitialSalaries, getSalary, insertJobSalary, getCategories, getJobsFromCategoryTag, insertJobByCategoryTag,
 }

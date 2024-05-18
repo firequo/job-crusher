@@ -14,7 +14,6 @@ async function get_async(url){
                     console.error(data);
                     resolve(null);
                 } else {
-                    console.log('successful api request');
                     resolve(JSON.parse(data));
                 }
             });

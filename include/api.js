@@ -8,25 +8,30 @@ async function getSalary(job){
     const url = mainURL + `/histogram?app_id=${api_id}&app_key=${api_key}&what=${job}&content-type=application/json`;
     const obj = await r.get_async(url);
     if(obj === null){
-        console.error('fetch error');
+        console.error('ERROR: API salary request');
+        console.error('ERROR: fetch error');
         return null;
     }
 
     let salary = calcMeanSalary(obj.histogram);
     if(salary == 0) {
-        console.error('bad job name');
+        console.error('ERROR: API salary parse');
+        console.error('ERROR: bad job name');
         return null;
     }
+    console.log('SUCCESS: API salary request');
     return salary;
 }
 
-async function getJobsFromCategory(category){
-    const url = mainURL + `/search/1?app_id=${api_id}&app_key=${api_key}&results_per_page=5&category=${category}`;
+async function getJobsFromCategoryTag(tag){
+    const url = mainURL + `/search/1?app_id=${api_id}&app_key=${api_key}&results_per_page=5&category=${tag}`;
     const obj = await r.get_async(url)
     if(obj === null){
-        console.error('fetch error');
+        console.error('ERROR: API jobs request');
+        console.error('ERROR: fetch error');
         return null;
     }
+    console.log('SUCCESS: API jobs request');
     return obj.results;
 }
 
@@ -46,5 +51,5 @@ function calcMeanSalary(histogram){
 }
 
 module.exports = {
-    getSalary, getJobsFromCategory,
+    getSalary, getJobsFromCategoryTag,
 }
