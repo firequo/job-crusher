@@ -68,5 +68,16 @@ app.get('/categories', async (req, res) => {
     res.send(categories);
 });
     
+ 
+app.get('/jobs/:category', async (req, res) => {
+    let category = req.params.category;
+    let jobs = await api.getJobsFromCategory(category);
 
+    if(jobs === null) {
+        console.error('salary api error');
+        res.sendStatus(500);
+    }
+    res.send(jobs);
+
+});
 

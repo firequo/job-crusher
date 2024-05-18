@@ -134,3 +134,11 @@ a {
     flex-direction: row;
     flex-wrap: wrap;
 }
+
+.jobListings {
+    border-color: black;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 5px;
+ }
+ 

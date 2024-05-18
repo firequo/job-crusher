@@ -20,7 +20,7 @@
     </div>
     <div id="formbox">
         <form>
-            <button id="search" class=".categoryButton" onclick="addJob(); return false">Find Job</button>
+            <button id="search" class=".categoryButton" onclick="addJobToChart(); return false">Find Job</button>
             <input type="text" required minlength="4" id="job" placeholder="Search">
         </form>
     </div>
@@ -28,6 +28,9 @@
     </div>
     <div id="categoryButtons">
     </div>
+    <div id="jobBox">        
+    </div>
+
 </body>
 
 </html>
@@ -38,6 +41,26 @@
         await getTop();
         await getCategories();
     }
+
+    /*Function to pull jobs from API and post them*/
+
+    async function createJobListings(category) {
+        jobListings = await fetch('/jobs/'+category).then((res) => res.json());
+        
+        const jobBox = document.getElementById("jobBox");
+
+        jobBox.innerHTML = "";
+        
+        jobListings.forEach(element => {
+            const jobList = document.createElement("div");
+            jobList.setAttribute("class","jobListings");
+
+            jobList.innerHTML = "<p>Title: "+element.title+"</p><br><p>Description: "+element.description+"</p>"
+
+            jobBox.appendChild(jobList);
+        });
+    }
+
     /*
     async function getCategories(){
         categories = await fetch('/categories').then((res) => res.json());
@@ -60,6 +83,10 @@
             button.classList.add('categoryButton'); // Add a class for styling
             button.addEventListener('click', () => {
                 console.log(`Button ${categories[i].category} clicked`);
+                console.log(categories[i].category.replace(/\s+/g, '-').toLowerCase());
+
+                createJobListings(categories[i].category.replace(/\s+/g, '-').toLowerCase())  
+
                 labels.push(categories[i].category);
                 data.push(categories[i].avg_salary);
                 makeSalChart();
@@ -79,7 +106,7 @@
         }
         makeSalChart();
     }
-    async function addJob(){
+    async function addJobToChart(){
         const job = document.getElementById('job').value
         console.log(job);
         if(labels.includes(job)) return;

@@ -20,6 +20,16 @@ async function getSalary(job){
     return salary;
 }
 
+async function getJobsFromCategory(category){
+    const url = mainURL + `/search/1?app_id=${api_id}&app_key=${api_key}&results_per_page=5&category=${category}`;
+    const obj = await get_async(url)
+    if(obj === null){
+        console.error('fetch error');
+        return null;
+    }
+    return obj.results;
+}
+
 function calcMeanSalary(histogram){
     let sum = 0;
     let counter = 0;
@@ -36,5 +46,5 @@ function calcMeanSalary(histogram){
 }
 
 module.exports = {
-    getSalary,
+    getSalary, getJobsFromCategory,
 }
