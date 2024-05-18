@@ -18,19 +18,23 @@
         <b><a href="/jobs">Jobs</a></b>
         <b><a href="/contact">Contact</a></b>
     </div>
-    <div id="formbox">
-        <form>
-            <button id="search" class=".categoryButton" onclick="addJobToChart(); return false">Find Job</button>
-            <input type="text" required minlength="4" id="job" placeholder="Search">
-        </form>
+    <div id="chartboxtitles">
+        <h1 style="grid-column: donut1;">Mean Salaries</h1>
+        <div id="formbox" style="grid-column: jobs;">
+            <form>
+                <input type="text" required minlength="4" id="job" placeholder="Search">
+                <button id="search" class=".categoryButton" onclick="addJobToChart(); return false">Lookup Salary</button>
+            </form>
+        </div>
+        <h1 style="grid-column: donut2;">Vacancies</h1>
     </div>
-    <div id="jobChartBox">
-    </div>
-    <div id="radarChartBox">
-        <div>
+    <div id="chartboxbox">
+        <div id="donutOne">
             <canvas id="catVacChart"></canvas>
         </div>
-        <div>
+        <div id="jobChartBox">
+        </div>
+        <div id="donutTwo">
             <canvas id="catSalChart"></canvas>
         </div>
     </div>
@@ -88,6 +92,7 @@
                 labels.push(categories[i].category);
                 data.push(categories[i].avg_salary);
                 makeSalChart();
+                return false;
             });
             box.appendChild(button);
         }
@@ -103,15 +108,23 @@
         makeSalChart();
     }
     async function addJobToChart(){
-        const job = document.getElementById('job').value
+        const job = document.getElementById('job').value;
+        if(job.length < 4) return;
         console.log(job);
         if(labels.includes(job)) return;
         let loading = document.createElement('p');
         loading.textContent = 'Loading';
         loading.id = 'loading';
+        let search_bar = document.getElementById('job');
+        let button = document.getElementById('search');
+        let sb_disp = search_bar.style.display;
+        search_bar.style.display = 'none';
+        button.style.display = 'none';
         document.getElementById('formbox').appendChild(loading);
         const json = await fetch(`/salary/${job}`).then((res) => res.json());
         loading.remove();
+        search_bar.style.display = sb_disp;
+        button.style.display = 'inline';
         console.log(json);
         const keys = Object.keys(json);
         if(keys.length != 1) return;
@@ -135,6 +148,8 @@
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true
@@ -162,8 +177,7 @@
                     label: 'Vacancies',
                     data: vacancyData,
                     borderWidth: 1
-                },
-                ]
+                }]
             },
             options: {
                 responsive: true,
@@ -183,8 +197,7 @@
                     label: 'Mean Salary',
                     data: salaryData,
                     borderWidth: 1
-                },
-                ]
+                }]
             },
             options: {
                 responsive: true,

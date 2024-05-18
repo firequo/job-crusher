@@ -1,0 +1,5 @@
+{
+    "apiKey": "your api key",
+    "apiId": "your api app id",
+    "supabaseKey" : "the supabase key"
+}
