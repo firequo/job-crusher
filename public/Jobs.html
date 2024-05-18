@@ -61,17 +61,6 @@
         });
     }
 
-    /*
-    async function getCategories(){
-        categories = await fetch('/categories').then((res) => res.json());
-        console.log(categories);
-        let box = document.getElementById('categoryButtons');
-        for(let i = 0; i < categories.length; i++){
-            let button = document.createElement('button');
-            button.textContent = categories[i].category;
-            box.appendChild(button);
-        }
-    }*/
     // This new function allow me to style the button on css
     async function getCategories() {
         categories = await fetch('/categories').then((res) => res.json());
@@ -83,9 +72,9 @@
             button.classList.add('categoryButton'); // Add a class for styling
             button.addEventListener('click', () => {
                 console.log(`Button ${categories[i].category} clicked`);
-                console.log(categories[i].category.replace(/\s+/g, '-').toLowerCase());
+                console.log(categories[i].tag);
 
-                createJobListings(categories[i].category.replace(/\s+/g, '-').toLowerCase())  
+                createJobListings(categories[i].tag); 
 
                 labels.push(categories[i].category);
                 data.push(categories[i].avg_salary);
@@ -94,8 +83,6 @@
             box.appendChild(button);
         }
     }
-
-
 
     async function getTop(){
         const res = await fetch('/salary/top').then((res) => res.json());

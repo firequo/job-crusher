@@ -2,10 +2,10 @@ const r = require('./req.js');
 const apiKeyInfo = require('./keys.json');
 const api_key = apiKeyInfo.apiKey;
 const api_id = apiKeyInfo.apiId;
-const mainURL = 'https://api.adzuna.com/v1/api/jobs/us/'
+const mainURL = 'https://api.adzuna.com/v1/api/jobs/us'
 
 async function getSalary(job){
-    const url = mainURL + `histogram?app_id=${api_id}&app_key=${api_key}&what=${job}&content-type=application/json`;
+    const url = mainURL + `/histogram?app_id=${api_id}&app_key=${api_key}&what=${job}&content-type=application/json`;
     const obj = await r.get_async(url);
     if(obj === null){
         console.error('fetch error');
@@ -22,7 +22,7 @@ async function getSalary(job){
 
 async function getJobsFromCategory(category){
     const url = mainURL + `/search/1?app_id=${api_id}&app_key=${api_key}&results_per_page=5&category=${category}`;
-    const obj = await get_async(url)
+    const obj = await r.get_async(url)
     if(obj === null){
         console.error('fetch error');
         return null;

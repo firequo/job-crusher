@@ -49,7 +49,7 @@ async function insertJob(job, salary){
 async function getCategories() {
     const cat = await supabase
         .from('categories')
-        .select('category, avg_salary, vacancies')
+        .select('category, avg_salary, vacancies, tag')
     if(cat.error) {
         console.error(cat.error);
         return null;
