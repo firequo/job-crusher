@@ -141,4 +141,10 @@ a {
     border-radius: 5px;
     padding: 5px;
  }
+
+#radarChartBox {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
  

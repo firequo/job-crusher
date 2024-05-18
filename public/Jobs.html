@@ -27,8 +27,12 @@
     <div id="jobChartBox">
     </div>
     <div id="radarChartBox">
-        <canvas id="catVacChart" style="width: 600px; height: 600px" width="600" height="600"></canvas>
-        <canvas id="catSalChart" style="width: 600px; height: 600px" width="600" height="600"></canvas>
+        <div>
+            <canvas id="catVacChart"></canvas>
+        </div>
+        <div>
+            <canvas id="catSalChart"></canvas>
+        </div>
     </div>
     <div id="categoryButtons">
     </div>
@@ -162,6 +166,8 @@
                 ]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false,
@@ -181,6 +187,8 @@
                 ]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false,
