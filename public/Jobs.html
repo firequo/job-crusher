@@ -28,19 +28,21 @@
         </div>
         <h1 style="grid-column: donut2;">Vacancies</h1>
     </div>
-    <div id="chartboxbox">
-        <div id="donutOne">
-            <canvas id="catVacChart"></canvas>
+    <div class="container">
+        <div id="chartboxbox">
+            <div id="donutOne">
+                <canvas id="catVacChart"></canvas>
+            </div>
+            <div id="jobChartBox">
+            </div>
+            <div id="donutTwo">
+                <canvas id="catSalChart"></canvas>
+            </div>
         </div>
-        <div id="jobChartBox">
+        <div id="categoryButtons">
         </div>
-        <div id="donutTwo">
-            <canvas id="catSalChart"></canvas>
+        <div id="jobBox">
         </div>
-    </div>
-    <div id="categoryButtons">
-    </div>
-    <div id="jobBox">        
     </div>
 
 </body>
@@ -58,6 +60,12 @@
     /*Function to pull jobs from API and post them*/
 
     async function createJobListings(category) {
+
+        let USDollar = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        });
+
         jobListings = await fetch('/jobs/'+category).then((res) => res.json());
         
         const jobBox = document.getElementById("jobBox");
@@ -68,7 +76,9 @@
             const jobList = document.createElement("div");
             jobList.setAttribute("class","jobListings");
 
-            jobList.innerHTML = "<p>Title: "+element.title+"</p><br><p>Description: "+element.description+"</p>"
+            console.log(element);
+
+            jobList.innerHTML = "<h3>Title: "+element.title+"</h3><h4>Location: "+element.location.display_name+"</h4><h4>Estimated Salary: " + USDollar.format((element.salary_min + element.salary_max)/2) + "</h4><p>Description: "+element.description+"</p><a target='_blank' href="+element.redirect_url+">--Click Here to Learn More At Adzuna.com!--</a>";
 
             jobBox.appendChild(jobList);
         });

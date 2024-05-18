@@ -142,17 +142,13 @@ a {
 }
 
 #categoryButtons {
+    padding: 10px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
 
-.jobListings {
-    border-color: black;
-    border-style: solid;
-    border-radius: 5px;
-    padding: 5px;
- }
+
 
 #donutOne {
     grid-column: donut1;
@@ -174,6 +170,8 @@ a {
 }
 #jobChartBox {
     grid-column: jobs;
+    display: block;
+    position: relative;
     justify-self: center;
     width: 100%;
     box-sizing: border-box;
@@ -183,4 +181,21 @@ a {
     display: grid;
     grid-template-columns: 5vw [donut1] 20vw  5vw [jobs] 40vw 5vw [donut2] 20vw 5vw;
     height: 50vh;
+    padding: 10px;
 }
+
+#jobBox {
+
+    display:flex;
+    flex-flow: row wrap;
+
+}
+
+.jobListings {
+    border-color: black;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    width: 750px;
+ }
