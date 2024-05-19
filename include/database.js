@@ -73,26 +73,26 @@ async function getCategories() {
 async function getJobsFromCategoryTag(tag) {
     const {data, error} = await supabase
         .from('categories')
-        .select('jobs')
+        .select('jobs, jobs_updated')
         .eq('tag', tag);
     if(error) {
         console.error('ERROR: GET jobs by category from categories');
         console.error(error);
-        return null;
+        return {jobs: null, date_updated: null};
     }
     if(data.length === 0){
         console.error('ERROR: GET jobs by category from categories');
         console.error('ERROR: data not in database');
-        return null;
+        return {jobs: null, date_updated: null};
     }
     console.log('SUCCESS: GET jobs by category from categories');
-    return data[0].jobs;
+    return {jobs: data[0].jobs, date_updated: data[0].jobs_updated};
 }
 
-async function insertJobByCategoryTag(tag, jobs){
+async function insertJobByCategoryTag(tag, jobs, jobs_updated){
     const {error} = await supabase
         .from('categories')
-        .update({jobs: jobs})
+        .update({jobs: jobs, jobs_updated: jobs_updated})
         .eq('tag', tag);
 
     if(error){

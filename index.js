@@ -36,7 +36,7 @@ app.get('/salary/top', async (req, res) => {
 app.get('/salary/:job', async (req, res) => {
     let job = req.params.job;
 
-    let salary = await db.getSalary(job);
+    let salary  = await db.getSalary(job);
     if(salary) {
         res.send({[job]: salary});
         return;
@@ -65,21 +65,28 @@ app.get('/categories', async (req, res) => {
 app.get('/jobs/:categoryTag', async (req, res) => {
     let tag = req.params.categoryTag;
 
-    let jobs = await db.getJobsFromCategoryTag(tag);
+    let {jobs, date_updated} = await db.getJobsFromCategoryTag(tag);
+    // check if updated within the last day
+    let today = new Date();
+    let update = false;
+    if(date_updated){
+        let delta_date = today.getTime() - Date.parse(date_updated);
+        // change the 24 to desired hours between updates
+        let day_timestamp = 1000 * 60 * 60 * 24;
+        if(delta_date > day_timestamp) update = true;
+    } 
+    if(!date_updated || update) {
+        jobs = await api.getJobsFromCategoryTag(tag);
+
+        if(jobs === null) {
+            res.sendStatus(500);
+            return;
+        }
+
+        await db.insertJobByCategoryTag(tag, jobs, today.toISOString());
+    }
     if(jobs) {
         res.send(jobs);
-        return;
     }
-
-    jobs = await api.getJobsFromCategoryTag(tag);
-
-    if(jobs === null) {
-        res.sendStatus(500);
-        return;
-    }
-
-    res.send(jobs);
-
-    await db.insertJobByCategoryTag(tag, jobs);
 });
 
