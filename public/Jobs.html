@@ -63,8 +63,6 @@
 
     async function createJobListings(tag) {
 
-        addCategoryData(tag);
-
         const jobListings = await fetch('/jobs/'+tag).then((res) => res.json());
 
         const jobBox = document.getElementById("jobBox");
@@ -88,6 +86,7 @@
     }
     function addCategoryData(tag){
         let categoryInfo = document.getElementById('categoryInfo');
+        categoryInfo.innerHTML = '';
         let categoryData = null;
         for(let i = 0; i < categories.length; i++){
             if(categories[i].tag === tag){
@@ -131,8 +130,10 @@
             button.addEventListener('click', async () => {
                 console.log(`Button ${categories[i].category} clicked`);
                 await createJobListings(categories[i].tag); 
+                addCategoryData(categories[i].tag);
 
                 //jump to below chart
+                window.scrollTo(0,0);
                 var rect = box.getBoundingClientRect();
                 window.scrollTo(0, rect.top);
 
