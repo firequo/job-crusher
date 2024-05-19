@@ -41,6 +41,8 @@
         </div>
         <div id="categoryButtons">
         </div>
+        <div id="categoryInfo">
+        </div>
         <div id="jobBox">
         </div>
     </div>
@@ -59,18 +61,19 @@
 
     /*Function to pull jobs from API and post them*/
 
-    async function createJobListings(category) {
+    async function createJobListings(tag) {
+
+        addCategoryData(tag);
+
+        const jobListings = await fetch('/jobs/'+tag).then((res) => res.json());
+
+        const jobBox = document.getElementById("jobBox");
+        jobBox.innerHTML = "";
 
         let USDollar = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
         });
-
-        jobListings = await fetch('/jobs/'+category).then((res) => res.json());
-        
-        const jobBox = document.getElementById("jobBox");
-
-        jobBox.innerHTML = "";
         
         jobListings.forEach(element => {
             const jobList = document.createElement("div");
@@ -83,6 +86,38 @@
             jobBox.appendChild(jobList);
         });
     }
+    function addCategoryData(tag){
+        let categoryInfo = document.getElementById('categoryInfo');
+        let categoryData = null;
+        for(let i = 0; i < categories.length; i++){
+            if(categories[i].tag === tag){
+                categoryData = categories[i];
+                break;
+            }
+        }
+        if(categoryData === null) return;
+
+        let USDollar = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        });
+
+        let name = document.createElement('h1');
+        let sal = document.createElement('h2');
+        let vac = document.createElement('h2');
+        name.textContent = categoryData.category;
+        sal.textContent = 'Mean Salary: ' + USDollar.format(categoryData.avg_salary);
+        vac.textContent = 'Vacancies: ' + categoryData.vacancies;
+        name.style.gridColumn = '2 / span 2'
+        name.style.gridRow = '1 / span 1'
+        sal.style.gridColumn = '1 / span 2'
+        sal.style.gridRow = '2 / span 1'
+        vac.style.gridColumn = '3 / span 2'
+        vac.style.gridRow = '2 / span 1'
+        categoryInfo.appendChild(sal);
+        categoryInfo.appendChild(name);
+        categoryInfo.appendChild(vac);
+    }
 
     // This new function allow me to style the button on css
     async function getCategories() {
@@ -93,22 +128,14 @@
             let button = document.createElement('button');
             button.textContent = categories[i].category;
             button.classList.add('categoryButton'); // Add a class for styling
-            button.addEventListener('click', () => {
+            button.addEventListener('click', async () => {
                 console.log(`Button ${categories[i].category} clicked`);
-                console.log(categories[i].tag);
+                await createJobListings(categories[i].tag); 
 
-                createJobListings(categories[i].tag); 
+                //jump to below chart
+                var rect = box.getBoundingClientRect();
+                window.scrollTo(0, rect.top);
 
-                labels.push(categories[i].category);
-                data.push(categories[i].avg_salary);
-                makeSalChart();
-
-                //jump to job section when button clicked
-                document.body.offsetHeight;
-                setTimeout(() => {
-                    window.scrollTo(0, document.body.scrollHeight);
-                }, 100);
-                
                 return false;
             });
             box.appendChild(button);
@@ -154,7 +181,7 @@
         document.getElementById('jobChartBox').innerHTML = '';
         document.getElementById('jobChartBox').innerHTML = '<canvas id="jobChart"></canvas>';
         const ctx = document.getElementById('jobChart');
-        new Chart(ctx, {
+        salBarChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
@@ -186,7 +213,7 @@
             salaryData.push(categories[i].avg_salary);
             vacancyData.push(categories[i].vacancies);
         }
-        new Chart(ctx0, {
+        vacDonutChart = new Chart(ctx0, {
             type: 'doughnut',
             data: {
                 labels: categoryLabels,
@@ -206,7 +233,7 @@
                 }
             },
         });
-        new Chart(ctx1, {
+        salDonutChart = new Chart(ctx1, {
             type: 'doughnut',
             data: {
                 labels: categoryLabels,
@@ -229,5 +256,8 @@
     }
     let labels = [];
     let data = [];
+    let salBarChart;
+    let salDonutChart;
+    let vacDonutChart; 
     window.onload = onStart;
 </script>
