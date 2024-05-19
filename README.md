@@ -103,11 +103,17 @@ Access the server at localhost:3000
 7. Change the supabase url in scripts/areas.js
 8. Change the supabase url in scripts/salaries.js
 9. Run scripts/categories.js to save the category information from the API to the database
+
     node scripts/categories.js
+
 10. Run scripts/salaries.js to get salary information for each category
+
     node scripts/salaries.js
+
 11. Run scripts/areas.js to get vacancy information for each category
+
     node scripts/areas.js
+
 
 <a id="endpoints"></a>
 
