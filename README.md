@@ -10,6 +10,7 @@ Table of contents:
 - [Known Issues and Future Development](#issues-future)
  
 <a id="pinfo"></a>
+
 ## Description: 
 
 This website provide a quick overview of the jobs and the salary of each job. User can do some quick research about their future career through this website. On this website, user can browse to many jobs, they can also browse by categories.  
@@ -19,9 +20,11 @@ This website provide a quick overview of the jobs and the salary of each job. Us
 All modern desktop browsers. 
 
 <a id="manual"></a>
+
 # DEVELOPER MANUAL:
 
 <a id="quickstart"></a>
+
 ## Quickstart (for development):
 
     git clone https://github.com/firequo/job-crusher.git
@@ -37,6 +40,7 @@ Load keys into keys_example.json and rename to keys.json.  click [here](#loading
 Access the server at localhost:3000
 
 <a id="full-guide"></a>
+
 ## Full guide: 
 
 ### For development work:
@@ -54,10 +58,13 @@ Then do
 This will install the dependencies for the project. These dependencies are:
 
 > expressjs: this provides the server functionality for our backend
+>
 > nodemon: this provides reloads of the server during development
+>
 > @supabase/supabase-js: This provides a javascript client for the database service we are using.
 
 <a id="local-keys"></a>
+
 ### Local Keys
 
 For development purposes, keys for adzuna and for supabase must be in a file called keys.json to run the local server.
@@ -65,8 +72,11 @@ In production, these variables are in environment variables in Vercel.
 
 **To get local keys:**
 > Register for an Adzuna account at https://developer.adzuna.com/overview
+>
 > Enter the api key and the app id for adzuna into keys_example.json and change the name to keys.json 
+>
 > Get the supabase key from one of the maintainers and add it to keys.json
+>
 > If you want to create a new database, it is more involved. Please click [here](#db-setup) for instructions.
 
 ### Start a local server
@@ -78,9 +88,11 @@ To start a live-reloading local server:
 Access the server at localhost:3000
 
 <a id="db-setup"></a>
+
 ### Setting up another database
 
 <a id="endpoints"></a>
+
 ## Endpoint documentation
 
 ### Static files
@@ -102,6 +114,7 @@ GET /jobs/:categoryTag : this gets information on five jobs matching a category 
 **API queries are stored in include/api.js**
 
 <a id="issues-future"></a>
+
 ## Known issues and future development
 
 **Issues:**
