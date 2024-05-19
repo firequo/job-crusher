@@ -27,7 +27,11 @@ const areas = [
     'Puerto Rico',      'Guam'
 ];
 (async function() {
+    // some of the calls fail because of adzuna server errors, so load what works and then load partials and combine them
+    await get_working();
+    await get_with_areas();
 })()
+
 async function get_with_areas(){
     const tagInfo = await supabase
         .from('categories')

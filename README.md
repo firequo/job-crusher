@@ -91,6 +91,21 @@ Access the server at localhost:3000
 
 ### Setting up another database
 
+1. Create a supabase account
+2. Create a salaries table (turning off RLS)
+3. Create a categories table (turning off RLS)
+4. Add your supabase key to include/keys.json
+5. Change the supabase url in include/databases.js
+6. Change the supabase url in scripts/categories.js
+7. Change the supabase url in scripts/areas.js
+8. Change the supabase url in scripts/salaries.js
+9. Run scripts/categories.js to save the category information from the API to the database
+    node scripts/categories.js
+10. Run scripts/salaries.js to get salary information for each category
+    node scripts/salaries.js
+11. Run scripts/areas.js to get vacancy information for each category
+    node scripts/areas.js
+
 <a id="endpoints"></a>
 
 ## Endpoint documentation
@@ -120,8 +135,10 @@ GET /jobs/:categoryTag : this gets information on five jobs matching a category 
 **Issues:**
 - The charts despawn after a period of inactivity when the window is in the background. They reappear when moused over. No idea why, maybe due to garbage collection or something.
 - Site formatting works poorly on mobile
+- Scripts for initial population of databases are not robust and were made to be used once and thrown away (should work fine but YMMV)
 
 **Future Development:**
 - Make a mobile version of the site
 - Refactor jobs.html
 - Add more pages and more functionality
+- Update average salaries and vacancies automatically

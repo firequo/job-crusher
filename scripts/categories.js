@@ -1,6 +1,6 @@
 const https = require('https');
 const supabaseClient = require('@supabase/supabase-js');
-const apiKeyInfo = require('../keys.json');
+const apiKeyInfo = require('..include/keys.json');
 const api_key = apiKeyInfo.apiKey;
 const api_id = apiKeyInfo.apiId;
 const supabase_url = 'https://tivhtpnwbqgcpxwifuej.supabase.co';
