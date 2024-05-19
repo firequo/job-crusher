@@ -34,7 +34,7 @@ All modern desktop browsers.
 
     npm install
 
-Load keys into keys_example.json and rename to keys.json.  click [here](#loading-keys) for more info
+Load keys into keys_example.json and rename to keys.json.  click [here](#local-keys) for more info
 
     npm start
 
