@@ -46,6 +46,8 @@ Access the server at localhost:3000
 
 ### For development work:
 
+Make sure node version 20.X is installed.
+
 Clone the repository and switch to the dev branch:
 
     git clone https://github.com/firequo/job-crusher.git
