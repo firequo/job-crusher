@@ -230,3 +230,9 @@ a {
     background: inherit;
     z-index: -1;
 }
+#categoryInfo{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    text-align: center;
+}
