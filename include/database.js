@@ -1,7 +1,6 @@
-const apiKeyInfo = require('./keys.json');
 const supabaseClient = require('@supabase/supabase-js');
 const supabase_url = 'https://tivhtpnwbqgcpxwifuej.supabase.co';
-const supabase_key = apiKeyInfo.supabaseKey; 
+const supabase_key = process.env.supabaseKey; 
 const supabase = supabaseClient.createClient(supabase_url, supabase_key);
 
 async function getInitialSalaries() {

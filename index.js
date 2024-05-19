@@ -36,7 +36,9 @@ app.get('/salary/top', async (req, res) => {
 app.get('/salary/:job', async (req, res) => {
     let job = req.params.job;
 
-    let salary  = await db.getSalary(job);
+
+    let salary = await db.getSalary(job);
+
     if(salary) {
         res.send({[job]: salary});
         return;
@@ -65,6 +67,7 @@ app.get('/categories', async (req, res) => {
 app.get('/jobs/:categoryTag', async (req, res) => {
     let tag = req.params.categoryTag;
 
+
     let {jobs, date_updated} = await db.getJobsFromCategoryTag(tag);
     // check if updated within the last day
     let today = new Date();
@@ -87,6 +90,9 @@ app.get('/jobs/:categoryTag', async (req, res) => {
     }
     if(jobs) {
         res.send(jobs);
+    } else {
+        res.sendStatus(500);
     }
+
 });
 

@@ -1,7 +1,6 @@
 const r = require('./req.js');
-const apiKeyInfo = require('./keys.json');
-const api_key = apiKeyInfo.apiKey;
-const api_id = apiKeyInfo.apiId;
+const api_key = process.env.apiKey;
+const api_id =  process.env.apiId;
 const mainURL = 'https://api.adzuna.com/v1/api/jobs/us'
 
 async function getSalary(job){
