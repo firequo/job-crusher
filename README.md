@@ -6,6 +6,7 @@ Table of contents:
     - [Quickstart](#quickstart)
     - [Full Guide](#full-guide)
         - [Local Keys](#local-keys)
+        - [Setting up a Copy of the Database (Very Unlikely)](#db-setup)
 - [Endpoint Documentation](#endpoints)
 - [Known Issues and Future Development](#issues-future)
  
@@ -89,7 +90,9 @@ Access the server at localhost:3000
 
 <a id="db-setup"></a>
 
-### Setting up another database
+## Setting up another database
+
+# ONLY DO THIS IF YOU ARE CERTAIN YOU NEED IT
 
 1. Create a supabase account
 2. Create a salaries table (turning off RLS)
