@@ -121,17 +121,39 @@ Access the server at localhost:3000
 
 ### Static files
 
-GET / : sends the home page html file
-GET /jobs : sends the jobs html file
-GET /about : sends the about html file
-GET /contact : sends the contact html file
+**GET / :**
+
+sends the home page html file
+
+**GET /jobs :**
+
+sends the jobs html file
+
+**GET /about :**
+
+sends the about html file
+
+**GET /contact :**
+
+sends the contact html file
 
 ### Fetching data
 
-GET /salary/top :  gets an array of several jobs (with the lowest ids) with their average salary from the database
-GET /salary/:job : gets the average salary information for a given job string. This queries the database, if it is not found in the database this information is loaded from the Adzuna API and saved in the database for future lookups 
-GET /categories : gets job category information from the database
-GET /jobs/:categoryTag : this gets information on five jobs matching a category tag. It queries the database. If it is not found in the database or the entry was last updated over a day ago, it queries the API and updates the database.
+**GET /salary/top :**
+
+gets an array of several jobs (with the lowest ids) with their average salary from the database
+
+**GET /salary/:job :**
+
+gets the average salary information for a given job string. This queries the database, if it is not found in the database this information is loaded from the Adzuna API and saved in the database for future lookups 
+
+**GET /categories :**
+
+gets job category information from the database
+
+**GET /jobs/:categoryTag :**
+
+gets information on five jobs matching a category tag. It queries the database. If it is not found in the database or the entry was last updated over a day ago, it queries the API and updates the database.
 
 **Database queries are stored in include/database.js**
 
