@@ -14,7 +14,7 @@ Table of contents:
 
 ## Description: 
 
-This website provide a quick overview of the jobs and the salary of each job. User can do some quick research about their future career through this website. On this website, user can browse to many jobs, they can also browse by categories.  
+This website provide a quick overview of the jobs and the salary of each job. User can do some quick research about their future career through this website. On this website, user can browse to many jobs, they can also browse by categories. Our project seeks to aid students, job seekers, educational institutions, employers to gather valuable information about the current job market. We do this by providing detailed information, specifically regarding salary information about job listings, based on keywords. 
 
 ## Target browsers: 
 
